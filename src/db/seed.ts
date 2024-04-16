@@ -1,8 +1,9 @@
+/* eslint-disable drizzle/enforce-delete-with-where */
+
 import { faker } from '@faker-js/faker'
 import { db } from './connection'
 import { users, restaurants } from './schema'
 import chalk from 'chalk'
-import { eq } from 'drizzle-orm'
 
 /**
  * On create a seed:
@@ -25,13 +26,13 @@ await db.insert(users).values([
   {
     name: faker.person.firstName(),
     email: faker.internet.email(),
-    role: 'customer'
+    role: 'customer',
   },
   {
     name: faker.person.firstName(),
     email: faker.internet.email(),
-    role: 'customer'
-  }
+    role: 'customer',
+  },
 ])
 
 console.log(chalk.yellow('✔️ Created users'))
@@ -39,15 +40,18 @@ console.log(chalk.yellow('✔️ Created users'))
 /**
  * Create mananger
  */
-const [mananger] = await db.insert(users).values([
-  {
-    name: faker.person.firstName(),
-    email: 'admin@admin.com',
-    role: 'mananger'
-  }
-]).returning({
-  id: users.id
-})
+const [mananger] = await db
+  .insert(users)
+  .values([
+    {
+      name: faker.person.firstName(),
+      email: 'admin@admin.com',
+      role: 'mananger',
+    },
+  ])
+  .returning({
+    id: users.id,
+  })
 
 console.log(chalk.yellow('✔️ Created mananger'))
 
@@ -55,13 +59,12 @@ console.log(chalk.yellow('✔️ Created mananger'))
  * Create restaurant
  */
 
-
 await db.insert(restaurants).values([
   {
     name: faker.company.name(),
     description: faker.lorem.paragraph(),
-    manangerId: mananger.id
-  }
+    manangerId: mananger.id,
+  },
 ])
 
 console.log(chalk.yellow('✔️ Created restaurant'))
