@@ -10,7 +10,7 @@ export const restaurants = pgTable('restaurants', {
     .$defaultFn(() => createId())
     .primaryKey(),
   name: text('name').notNull(),
-  description: text('description').notNull().unique(),
+  description: text('description').notNull(),
   manangerId: text('mananger_id').references(() => users.id, {
     // cascade options
     onDelete: 'set null',

@@ -1,0 +1,1 @@
+ALTER TABLE "auth_links" ALTER COLUMN "code" SET DATA TYPE text;

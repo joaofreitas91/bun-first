@@ -1,0 +1,1 @@
+ALTER TABLE "restaurants" DROP CONSTRAINT "restaurants_description_unique";
