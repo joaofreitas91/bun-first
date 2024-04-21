@@ -1,25 +1,15 @@
-import { Elysia, t } from 'elysia'
-import jwt from '@elysiajs/jwt'
-import cookie from '@elysiajs/cookie'
+import { Elysia } from 'elysia'
 
 import { registerRestaurant } from './routes/register-restaurant'
 import { sendAuthLink } from './routes/send-auth-link'
 
 import { env } from '../env'
+import { authenticateFromLink } from './routes/authenticate-from-link'
 
 const app = new Elysia()
-  .use(
-    jwt({
-      secret: env.JWT_SECRET_KEY,
-      schema: t.Object({
-        sub: t.String(),
-        restaurantID: t.Optional(t.String()),
-      }),
-    }),
-  )
-  .use(cookie())
   .use(registerRestaurant)
   .use(sendAuthLink)
+  .use(authenticateFromLink)
 
 const port = env.PORT || 3333
 
