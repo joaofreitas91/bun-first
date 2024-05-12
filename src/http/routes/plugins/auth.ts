@@ -1,24 +1,26 @@
-import Elysia, { t } from 'elysia'
+import Elysia, { t, type Static } from 'elysia'
 import jwt from '@elysiajs/jwt'
 
 import { env } from '../../../env'
+
+const jwtPayload = t.Object({
+  sub: t.String(),
+  restaurantID: t.Optional(t.String()),
+})
 
 export const auth = new Elysia()
   .use(
     jwt({
       secret: env.JWT_SECRET_KEY,
-      schema: t.Object({
-        sub: t.String(),
-        restaurantID: t.Optional(t.String()),
-      }),
+      schema: jwtPayload,
     }),
   )
   .derive({ as: 'scoped' }, ({ jwt, cookie: { authToken } }) => {
     return {
-      signIn: async (userId: string, restaurantID: string | undefined) => {
+      signIn: async (payload: Static<typeof jwtPayload>) => {
         const token = await jwt.sign({
-          sub: userId,
-          restaurantID,
+          sub: payload.sub,
+          restaurantID: payload.restaurantID,
         })
 
         authToken.value = token
