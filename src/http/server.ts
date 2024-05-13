@@ -16,6 +16,21 @@ const app = new Elysia()
   .use(signOut)
   .use(getCurrentUser)
   .use(getManagedRestaurant)
+  .onError(({ code, error, set }) => {
+    switch (code) {
+      case 'VALIDATION': {
+        set.status = error.status
+
+        return error.toResponse()
+      }
+
+      default: {
+        console.error(error)
+
+        return new Response(null, { status: 500 })
+      }
+    }
+  })
 
 const port = env.PORT || 3333
 
