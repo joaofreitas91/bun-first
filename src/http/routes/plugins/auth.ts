@@ -5,7 +5,7 @@ import { env } from '../../../env'
 
 const jwtPayload = t.Object({
   sub: t.String(),
-  restaurantID: t.Optional(t.String()),
+  restaurantId: t.Optional(t.String()),
 })
 
 export const auth = new Elysia()
@@ -20,7 +20,7 @@ export const auth = new Elysia()
       signIn: async (payload: Static<typeof jwtPayload>) => {
         const token = await jwt.sign({
           sub: payload.sub,
-          restaurantID: payload.restaurantID,
+          restaurantId: payload.restaurantId,
         })
 
         authToken.value = token
@@ -34,6 +34,19 @@ export const auth = new Elysia()
 
       signOut: () => {
         authToken.remove()
+      },
+
+      getCurrentUser: async () => {
+        const token = await jwt.verify(authToken.value)
+
+        if (!token) {
+          throw new Error('Not authorized')
+        }
+
+        return {
+          userId: token.sub,
+          restaurantID: token.restaurantId,
+        }
       },
     }
   })
